@@ -39,6 +39,7 @@ yarn-error.log
 .vscode
 *.log
 .env
+coverage
 
 # BUCK
 buck-out/

@@ -10,4 +10,5 @@ module.exports = {
   },
   testMatch: ['**/tests/**/*.test.(ts|js)'],
   testEnvironment: 'node',
+  modulePathIgnorePatterns: ['node_modules', 'build'],
 };
