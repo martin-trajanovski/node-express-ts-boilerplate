@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
 import chalk from 'chalk';
+import { Request, Response } from 'express';
+
 import { HttpException } from '@src/exceptions';
 import logger from '@src/utils/logger';
 

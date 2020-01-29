@@ -1,5 +1,5 @@
-import TodosService from '@src/routes/todos/todos.service';
 import { TodoDto } from '@src/routes/todos/todo.dto';
+import TodosService from '@src/routes/todos/todos.service';
 import testDBHandler from '@src/utils/testDBHandler';
 
 // NOTE: Run the in-memory database.

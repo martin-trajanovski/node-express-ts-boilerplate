@@ -1,15 +1,16 @@
 import bodyParser from 'body-parser';
-import express from 'express';
-import mongoose from 'mongoose';
 import chalk from 'chalk';
 import compression from 'compression';
-import morgan from 'morgan';
-import lusca from 'lusca';
 import cors from 'cors';
+import express from 'express';
+import lusca from 'lusca';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+
+import { HttpException } from './exceptions';
 import { Controller } from './interfaces';
 import errorMiddleware from './middlewares/error.middleware';
 import logger from './utils/logger';
-import { HttpException } from './exceptions';
 
 class App {
   public app: express.Application;

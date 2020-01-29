@@ -15,18 +15,19 @@ const fakeTodo: TodoDto = {
 };
 
 describe('todos.service.ts -> TODO update', () => {
-  test('When updating todo by id, should return it updated', async () => {
+  test('When removing todo by id, should return removed todo and it should not be in the database', async () => {
     const todo = await todosService.create(fakeTodo);
-    todo.completed = !todo.completed;
 
-    const updatedTodo = await todosService.update(todo);
+    const removedTodo = await todosService.remove(todo._id);
+    const todos = await todosService.getAll();
 
-    expect(updatedTodo.completed).toBeTruthy();
+    expect(removedTodo._id).toBeDefined();
+    expect(todos).not.toContain(removedTodo);
   });
 
-  test('When passing random id to update todo, should throw not found error', async () => {
+  test('When passing random id to remove todo, should throw not found error', async () => {
     await expect(
-      todosService.update({ ...fakeTodo, _id: mongoose.Types.ObjectId() })
+      todosService.remove(mongoose.Types.ObjectId())
     ).rejects.toThrow(new HttpException(404, 'Todo not found'));
   });
 });

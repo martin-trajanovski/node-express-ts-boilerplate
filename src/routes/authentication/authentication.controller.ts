@@ -1,9 +1,12 @@
 import express from 'express';
 import { check, sanitize, validationResult } from 'express-validator';
-import { Controller } from '@src/interfaces';
+
 import { HttpException } from '@src/exceptions';
-import AuthenticationService from './authentication.service';
+import { Controller } from '@src/interfaces';
+
 import CreateUserDto from '../user/user.dto';
+
+import AuthenticationService from './authentication.service';
 import LogInDto from './login.dto';
 
 class AuthenticationController implements Controller {

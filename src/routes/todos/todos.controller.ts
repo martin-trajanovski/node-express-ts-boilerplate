@@ -1,10 +1,13 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { Controller, Todo } from '@src/interfaces';
+import { Types } from 'mongoose';
+
 import { HttpException } from '@src/exceptions';
+import { Controller, Todo } from '@src/interfaces';
 import authMiddleware from '@src/middlewares/auth.middleware';
-import TodosService from './todos.service';
+
 import { TodoDto } from './todo.dto';
+import TodosService from './todos.service';
 
 class TodosController implements Controller {
   public path = '/todos';
@@ -21,6 +24,7 @@ class TodosController implements Controller {
     this.router.get(`${this.path}`, authMiddleware, this.getAll);
     this.router.post(`${this.path}`, authMiddleware, this.create);
     this.router.put(`${this.path}`, authMiddleware, this.update);
+    this.router.delete(`${this.path}`, authMiddleware, this.remove);
   }
 
   private getAll = async (
@@ -95,6 +99,35 @@ class TodosController implements Controller {
       const todoData: Todo = request.body;
 
       const todo = await this.todosService.update(todoData);
+
+      response.send({
+        success: true,
+        todo,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private remove = async (
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      await check('_id', '_id must be valid')
+        .isMongoId()
+        .run(request);
+
+      const errors = validationResult(request);
+
+      if (!errors.isEmpty()) {
+        return next(new HttpException(400, 'Wrong request params!', errors));
+      }
+
+      const todoToRemoveId: Types.ObjectId = request.body._id;
+
+      const todo = await this.todosService.remove(todoToRemoveId);
 
       response.send({
         success: true,

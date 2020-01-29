@@ -1,7 +1,9 @@
 import express from 'express';
+
 import { Controller } from '@src/interfaces';
-import UsersService from './users.service';
 import authMiddleware from '@src/middlewares/auth.middleware';
+
+import UsersService from './users.service';
 
 class UsersController implements Controller {
   public path = '/users';

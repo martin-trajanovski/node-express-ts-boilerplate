@@ -1,9 +1,10 @@
 import httpMocks from 'node-mocks-http';
-import authMiddleware from '@src/middlewares/auth.middleware';
+
 import {
   AuthenticationTokenMissingException,
   WrongAuthenticationTokenException,
 } from '@src/exceptions';
+import authMiddleware from '@src/middlewares/auth.middleware';
 
 describe('auth.middleware.ts', () => {
   test('A request without authentication header, should return "AuthenticationTokenMissingException"', () => {

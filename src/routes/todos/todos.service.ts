@@ -1,6 +1,9 @@
+import { Types } from 'mongoose';
+
 import { HttpException } from '@src/exceptions';
-import { todoModel } from '@src/models';
 import { Todo } from '@src/interfaces';
+import { todoModel } from '@src/models';
+
 import { TodoDto } from './todo.dto';
 
 class TodosService {
@@ -39,6 +42,20 @@ class TodosService {
       }
 
       return updatedTodo;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async remove(todoToRemoveId: Types.ObjectId): Promise<Todo> {
+    try {
+      const removedTodo = await this.todos.findByIdAndRemove(todoToRemoveId);
+
+      if (!removedTodo) {
+        throw new HttpException(404, 'Todo not found');
+      }
+
+      return removedTodo;
     } catch (error) {
       throw error;
     }

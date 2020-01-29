@@ -1,10 +1,10 @@
 import 'dotenv/config';
 import 'module-alias/register';
 import App from './app';
-import validateEnv from './utils/validateEnv';
 import AuthenticationController from './routes/authentication/authentication.controller';
-import UsersController from './routes/users/users.controller';
 import TodosController from './routes/todos/todos.controller';
+import UsersController from './routes/users/users.controller';
+import validateEnv from './utils/validateEnv';
 
 validateEnv();
 

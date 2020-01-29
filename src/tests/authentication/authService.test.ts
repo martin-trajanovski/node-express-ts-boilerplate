@@ -1,13 +1,14 @@
 import faker from 'faker';
+
 import 'dotenv/config';
-import testDBHandler from '@src/utils/testDBHandler';
-import AuthenticationService from '@src/routes/authentication/authentication.service';
-import CreateUserDto from '@src/routes/user/user.dto';
 import {
   UserWithThatEmailAlreadyExistsException,
   WrongCredentialsException,
   HttpException,
 } from '@src/exceptions';
+import AuthenticationService from '@src/routes/authentication/authentication.service';
+import CreateUserDto from '@src/routes/user/user.dto';
+import testDBHandler from '@src/utils/testDBHandler';
 
 // NOTE: Run the in-memory database.
 testDBHandler.run();
