@@ -25,6 +25,24 @@ class TodosService {
       throw error;
     }
   }
+
+  public async update(todoToUpdate: Todo): Promise<Todo> {
+    try {
+      const updatedTodo = await this.todos.findByIdAndUpdate(
+        todoToUpdate._id,
+        todoToUpdate,
+        { new: true }
+      );
+
+      if (!updatedTodo) {
+        throw new HttpException(404, 'Todo not found');
+      }
+
+      return updatedTodo;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default TodosService;
