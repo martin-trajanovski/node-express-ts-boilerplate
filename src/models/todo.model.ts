@@ -1,5 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
-import { Todo } from '../interfaces';
+import { Todo } from '@src/interfaces';
 
 const todoSchema = new Schema({
   title: {

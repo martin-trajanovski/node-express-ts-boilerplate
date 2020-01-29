@@ -1,5 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
-import { User } from '../interfaces';
+import { User } from '@src/interfaces';
 
 const addressSchema = new Schema({
   city: {

@@ -1,7 +1,7 @@
 import express from 'express';
-import { Controller } from '../../interfaces';
+import { Controller } from '@src/interfaces';
 import UsersService from './users.service';
-import authMiddleware from '../../middlewares/auth.midleware';
+import authMiddleware from '@src/middlewares/auth.middleware';
 
 class UsersController implements Controller {
   public path = '/users';

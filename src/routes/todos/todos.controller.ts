@@ -1,10 +1,10 @@
 import express from 'express';
-import { Controller } from '../../interfaces';
-import TodosService from './todos.service';
 import { check, validationResult } from 'express-validator';
-import { HttpException } from '../../exceptions';
+import { Controller } from '@src/interfaces';
+import { HttpException } from '@src/exceptions';
+import authMiddleware from '@src/middlewares/auth.middleware';
+import TodosService from './todos.service';
 import { TodoDto } from './todo.dto';
-// import authMiddleware from '../../middlewares/auth.midleware';
 
 class TodosController implements Controller {
   public path = '/todos';
@@ -18,8 +18,8 @@ class TodosController implements Controller {
   private initializeRoutes() {
     // NOTE: We can use this form as well if we want to apply authMiddleware to all routes.
     // this.router.all(`${this.path}/*`, authMiddleware)
-    this.router.get(`${this.path}`, this.getAll);
-    this.router.post(`${this.path}`, this.add);
+    this.router.get(`${this.path}`, authMiddleware, this.getAll);
+    this.router.post(`${this.path}`, authMiddleware, this.add);
   }
 
   private getAll = async (

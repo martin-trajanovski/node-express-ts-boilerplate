@@ -1,14 +1,14 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import {
   AuthenticationTokenMissingException,
   WrongAuthenticationTokenException,
-} from '../exceptions';
-import { DataStoredInToken, RequestWithUser } from '../interfaces';
-import { userModel } from '../models';
+} from '@src/exceptions';
+import { DataStoredInToken } from '@src/interfaces';
+import { userModel } from '@src/models';
 
 async function authMiddleware(
-  request: RequestWithUser,
+  request: Request,
   response: Response,
   next: NextFunction
 ) {
@@ -30,7 +30,6 @@ async function authMiddleware(
       const id = verificationResponse._id;
       const user = await userModel.findById(id);
       if (user) {
-        request.user = user;
         next();
       } else {
         next(new WrongAuthenticationTokenException());

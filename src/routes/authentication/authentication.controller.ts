@@ -1,10 +1,10 @@
 import express from 'express';
 import { check, sanitize, validationResult } from 'express-validator';
-import { Controller } from '../../interfaces';
+import { Controller } from '@src/interfaces';
+import { HttpException } from '@src/exceptions';
 import AuthenticationService from './authentication.service';
 import CreateUserDto from '../user/user.dto';
 import LogInDto from './login.dto';
-import { HttpException } from '../../exceptions';
 
 class AuthenticationController implements Controller {
   public path = '/auth';
@@ -54,7 +54,6 @@ class AuthenticationController implements Controller {
       const { user } = await this.authenticationService.register(userData);
       await this.authenticationService.logUserActivity(user, 'signup');
 
-      // response.setHeader('Set-Cookie', [cookie]);
       response.send({
         success: true,
       });

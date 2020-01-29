@@ -1,6 +1,6 @@
-import { HttpException } from '../../exceptions';
-import { todoModel } from '../../models';
-import { Todo } from '../../interfaces';
+import { HttpException } from '@src/exceptions';
+import { todoModel } from '@src/models';
+import { Todo } from '@src/interfaces';
 import { TodoDto } from './todo.dto';
 
 class TodosService {

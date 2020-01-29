@@ -1,6 +1,6 @@
-import { HttpException } from '../../exceptions';
-import { User } from '../../interfaces';
-import { userModel } from '../../models';
+import { HttpException } from '@src/exceptions';
+import { User } from '@src/interfaces';
+import { userModel } from '@src/models';
 
 class UsersService {
   private users = userModel;

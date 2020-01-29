@@ -4,14 +4,14 @@ import {
   HttpException,
   UserWithThatEmailAlreadyExistsException,
   WrongCredentialsException,
-} from '../../exceptions';
+} from '@src/exceptions';
 import {
   DataStoredInToken,
   TokenData,
   User,
   LoginActivity,
-} from '../../interfaces';
-import { userModel } from '../../models';
+} from '@src/interfaces';
+import { userModel } from '@src/models';
 import CreateUserDto from '../user/user.dto';
 import LogInDto from './login.dto';
 // import TokenList from '../../interfaces/tokenList.interface';
@@ -22,7 +22,7 @@ import LogInDto from './login.dto';
 const tokenList: any = {};
 
 class AuthenticationService {
-  public user = userModel;
+  private user = userModel;
 
   public async register(userData: CreateUserDto) {
     if (await this.user.findOne({ email: userData.email })) {
@@ -112,7 +112,7 @@ class AuthenticationService {
     }
   };
 
-  public createToken(user: User): TokenData {
+  private createToken(user: User): TokenData {
     const expiresIn = 60 * 60; // an hour
     const secret = process.env.JWT_SECRET;
     const dataStoredInToken: DataStoredInToken = {
@@ -125,7 +125,7 @@ class AuthenticationService {
     };
   }
 
-  public async createRefreshToken(user: User): Promise<string> {
+  private async createRefreshToken(user: User): Promise<string> {
     const expiresIn = 60 * 60 * 60; // a day
     const secret = process.env.REFRESH_TOKEN_SECRET;
 

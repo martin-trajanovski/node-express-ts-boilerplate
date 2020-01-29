@@ -17,6 +17,7 @@ class TestDBHandler {
     const mongooseOpts = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
     };
 
     await mongoose.connect(uri, mongooseOpts);
@@ -41,6 +42,29 @@ class TestDBHandler {
       const collection = collections[key];
       await collection.deleteMany({});
     }
+  }
+
+  async run() {
+    /**
+     * Connect to a new in-memory database before running any tests.
+     */
+    beforeAll(async () => {
+      await this.connect();
+    });
+
+    /**
+     * Clear all test data after every test.
+     */
+    afterEach(async () => {
+      await this.clearDatabase();
+    });
+
+    /**
+     * Remove and close the db and server.
+     */
+    afterAll(async () => {
+      await this.closeDatabase();
+    });
   }
 }
 

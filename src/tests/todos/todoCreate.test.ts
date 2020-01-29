@@ -1,8 +1,11 @@
 import mongoose from 'mongoose';
-import testDBHandler from '../utils/setupTests';
-import TodosService from '../routes/todos/todos.service';
-import { TodoDto } from '../routes/todos/todo.dto';
-import { todoModel } from '../models';
+import { todoModel } from '@src/models';
+import TodosService from '@src/routes/todos/todos.service';
+import { TodoDto } from '@src/routes/todos/todo.dto';
+import testDBHandler from '@src/utils/testDBHandler';
+
+// NOTE: Run the in-memory database.
+testDBHandler.run();
 
 const todosService = new TodosService();
 
@@ -18,27 +21,6 @@ const testTodoMissingCompleted = {
 const testTodoMissingTitle = {
   completed: false,
 };
-
-/**
- * Connect to a new in-memory database before running any tests.
- */
-beforeAll(async () => {
-  await testDBHandler.connect();
-});
-
-/**
- * Clear all test data after every test.
- */
-afterEach(async () => {
-  await testDBHandler.clearDatabase();
-});
-
-/**
- * Remove and close the db and server.
- */
-afterAll(async () => {
-  await testDBHandler.closeDatabase();
-});
 
 describe('todos.service.ts -> TODO create ', () => {
   test('When proper TODO is passed, there should be NO error', async () => {

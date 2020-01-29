@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'module-alias/register';
 import App from './app';
 import validateEnv from './utils/validateEnv';
 import AuthenticationController from './routes/authentication/authentication.controller';

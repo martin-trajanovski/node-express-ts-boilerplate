@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import chalk from 'chalk';
-import { HttpException } from '../exceptions';
-import logger from '../utils/logger';
+import { HttpException } from '@src/exceptions';
+import logger from '@src/utils/logger';
 
 function errorMiddleware(
   error: HttpException,
