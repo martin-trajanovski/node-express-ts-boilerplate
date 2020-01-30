@@ -19,6 +19,7 @@
     "import/order": [
       "error",
       {
+        "groups": ["builtin", "external", ["parent", "sibling"], "index"],
         "pathGroups": [
           {
             "pattern": "@src/**",

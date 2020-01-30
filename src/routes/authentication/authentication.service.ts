@@ -15,7 +15,6 @@ import {
 import { userModel } from '@src/models';
 
 import CreateUserDto from '../user/user.dto';
-
 import LogInDto from './login.dto';
 // import TokenList from '../../interfaces/tokenList.interface';
 

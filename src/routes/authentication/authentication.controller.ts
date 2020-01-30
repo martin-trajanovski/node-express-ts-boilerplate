@@ -5,7 +5,6 @@ import { HttpException } from '@src/exceptions';
 import { Controller } from '@src/interfaces';
 
 import CreateUserDto from '../user/user.dto';
-
 import AuthenticationService from './authentication.service';
 import LogInDto from './login.dto';
 
