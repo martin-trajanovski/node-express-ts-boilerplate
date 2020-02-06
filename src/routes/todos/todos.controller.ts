@@ -20,11 +20,11 @@ class TodosController implements Controller {
 
   private initializeRoutes() {
     // NOTE: We can use this form as well if we want to apply authMiddleware to all routes.
-    // this.router.all(`${this.path}/*`, authMiddleware)
+    // this.router.all(`${this.path}/*`, authMiddleware);
     this.router.get(`${this.path}`, authMiddleware, this.getAll);
     this.router.post(`${this.path}`, authMiddleware, this.create);
     this.router.put(`${this.path}`, authMiddleware, this.update);
-    this.router.delete(`${this.path}`, authMiddleware, this.remove);
+    this.router.delete(`${this.path}/:id`, authMiddleware, this.remove);
   }
 
   private getAll = async (
@@ -115,19 +115,20 @@ class TodosController implements Controller {
     next: express.NextFunction
   ) => {
     try {
-      await check('_id', '_id must be valid')
-        .isMongoId()
-        .run(request);
+      const todoToRemoveId: string = request.params.id;
 
-      const errors = validationResult(request);
+      // NOTE: Validate id param manually for now. Check if it is possible to do it with express-validator.
+      if (!todoToRemoveId || !todoToRemoveId.match(/^[0-9a-fA-F]{24}$/)) {
+        const errors = [{ msg: 'Invalid id', param: 'id', location: 'params' }];
 
-      if (!errors.isEmpty()) {
-        return next(new HttpException(400, 'Wrong request params!', errors));
+        return next(
+          new HttpException(400, 'Wrong request params!', { errors })
+        );
       }
 
-      const todoToRemoveId: Types.ObjectId = request.body._id;
-
-      const todo = await this.todosService.remove(todoToRemoveId);
+      const todo = await this.todosService.remove(
+        Types.ObjectId(todoToRemoveId)
+      );
 
       response.send({
         success: true,

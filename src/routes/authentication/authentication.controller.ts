@@ -95,7 +95,6 @@ class AuthenticationController implements Controller {
       } = await this.authenticationService.login(logInData);
 
       response.send({
-        success: true,
         authToken,
         refreshToken,
       });
@@ -147,17 +146,12 @@ class AuthenticationController implements Controller {
       );
 
       response.send({
-        success: true,
         authToken,
       });
     } catch (error) {
       next(error);
     }
   };
-
-  // private createCookie(tokenData: TokenData) {
-  //   return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
-  // }
 }
 
 export default AuthenticationController;

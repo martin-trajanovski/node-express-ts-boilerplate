@@ -36,6 +36,7 @@ class AuthenticationService {
       password: hashedPassword,
     });
     user.password = '';
+
     return {
       user,
     };
@@ -116,13 +117,15 @@ class AuthenticationService {
 
   private createToken(user: User): TokenData {
     const expiresIn = 60 * 60; // an hour
+    const expiresInMS = expiresIn * 1000;
+    const expiresAt = new Date(Date.now() + expiresInMS).getTime();
     const secret = process.env.JWT_SECRET;
     const dataStoredInToken: DataStoredInToken = {
       _id: user._id,
     };
 
     return {
-      expiresIn,
+      expiresAt,
       token: jwt.sign(dataStoredInToken, secret, { expiresIn }),
     };
   }
@@ -136,6 +139,7 @@ class AuthenticationService {
     });
 
     await this.user.findOneAndUpdate({ email: user.email }, { refreshToken });
+
     // TODO: Update all depredated mongoose functions. There are warnings in the console, check them all!
     return refreshToken;
   }
