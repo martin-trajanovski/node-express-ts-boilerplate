@@ -13,10 +13,12 @@ const todosService = new TodosService();
 const testTodo: TodoDto = {
   title: 'Test todo',
   completed: false,
+  createdBy: mongoose.Types.ObjectId(),
 };
 
 const testTodoMissingCompleted = {
   title: 'Test todo',
+  createdBy: mongoose.Types.ObjectId(),
 };
 
 const testTodoMissingTitle = {

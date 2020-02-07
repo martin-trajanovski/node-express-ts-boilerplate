@@ -11,6 +11,11 @@ const todoSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'users',
+    required: true,
+  },
 });
 
 export const todoModel = model<Todo & Document>('todos', todoSchema);

@@ -3,7 +3,7 @@ import { check, validationResult } from 'express-validator';
 import { Types } from 'mongoose';
 
 import { HttpException } from '@src/exceptions';
-import { Controller, Todo } from '@src/interfaces';
+import { Controller, Todo, RequestWithUser } from '@src/interfaces';
 import authMiddleware from '@src/middlewares/auth.middleware';
 
 import { TodoDto } from './todo.dto';
@@ -28,7 +28,7 @@ class TodosController implements Controller {
   }
 
   private getAll = async (
-    request: express.Request,
+    request: RequestWithUser,
     response: express.Response,
     next: express.NextFunction
   ) => {
@@ -36,7 +36,7 @@ class TodosController implements Controller {
       const limit: number = request.query.hasOwnProperty('limit')
         ? parseInt(request.query.limit)
         : 10;
-      const todos = await this.todosService.getAll(limit);
+      const todos = await this.todosService.getAll(limit, request.user._id);
 
       response.send({
         success: true,
@@ -48,7 +48,7 @@ class TodosController implements Controller {
   };
 
   private create = async (
-    request: express.Request,
+    request: RequestWithUser,
     response: express.Response,
     next: express.NextFunction
   ) => {
@@ -63,7 +63,10 @@ class TodosController implements Controller {
         return next(new HttpException(400, 'Wrong request params!', errors));
       }
 
-      const todoData: TodoDto = request.body;
+      const todoData: TodoDto = {
+        ...request.body,
+        createdBy: request.user._id,
+      };
 
       const todo = await this.todosService.create(todoData);
 

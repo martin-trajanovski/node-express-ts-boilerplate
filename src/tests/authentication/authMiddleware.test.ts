@@ -4,6 +4,7 @@ import {
   AuthenticationTokenMissingException,
   WrongAuthenticationTokenException,
 } from '@src/exceptions';
+import { RequestWithUser } from '@src/interfaces';
 import authMiddleware from '@src/middlewares/auth.middleware';
 
 describe('auth.middleware.ts', () => {
@@ -18,7 +19,8 @@ describe('auth.middleware.ts', () => {
     const response = httpMocks.createResponse();
     const next = jest.fn();
 
-    authMiddleware(request, response, next);
+    // NOTE: Should convert to `unknown` first because typescipt complains about nonconvertable types
+    authMiddleware((request as unknown) as RequestWithUser, response, next);
 
     expect(next).toBeCalledWith(new AuthenticationTokenMissingException());
   });
@@ -34,7 +36,7 @@ describe('auth.middleware.ts', () => {
     const response = httpMocks.createResponse();
     const next = jest.fn();
 
-    authMiddleware(request, response, next);
+    authMiddleware((request as unknown) as RequestWithUser, response, next);
 
     expect(next).toBeCalledWith(new WrongAuthenticationTokenException());
   });

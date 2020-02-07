@@ -12,6 +12,7 @@ const todosService = new TodosService();
 const fakeTodo: TodoDto = {
   title: faker.random.words(),
   completed: false,
+  createdBy: mongoose.Types.ObjectId(),
 };
 
 describe('todos.service.ts -> TODO update', () => {

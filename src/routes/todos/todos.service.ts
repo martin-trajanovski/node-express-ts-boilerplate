@@ -9,9 +9,12 @@ import { TodoDto } from './todo.dto';
 class TodosService {
   private todos = todoModel;
 
-  public async getAll(limit: number = 10): Promise<Todo[]> {
+  public async getAll(
+    limit: number = 10,
+    userId: Types.ObjectId
+  ): Promise<Todo[]> {
     try {
-      const result = await this.todos.find({}).limit(limit);
+      const result = await this.todos.find({ createdBy: userId }).limit(limit);
 
       return result;
     } catch (error) {
