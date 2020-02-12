@@ -4,7 +4,6 @@ import 'dotenv/config';
 import {
   UserWithThatEmailAlreadyExistsException,
   WrongCredentialsException,
-  HttpException,
 } from '@src/exceptions';
 import AuthenticationService from '@src/routes/authentication/authentication.service';
 import CreateUserDto from '@src/routes/user/user.dto';
@@ -66,20 +65,5 @@ describe('authentication.service.ts', () => {
     const authToken = await authService.refreshToken(tokens.refreshToken);
 
     expect(authToken.token).toBeDefined();
-  });
-
-  test('When logged out and try to refresh token, should return error', async () => {
-    await authService.register(fakeUser);
-
-    const tokens = await authService.login({
-      email: fakeUser.email,
-      password: fakeUser.password,
-    });
-
-    authService.logout(tokens.refreshToken);
-
-    await expect(authService.refreshToken(tokens.refreshToken)).rejects.toThrow(
-      new HttpException(401, 'Refresh token expired - session ended.')
-    );
   });
 });

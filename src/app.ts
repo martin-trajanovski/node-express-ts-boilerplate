@@ -11,6 +11,7 @@ import { HttpException } from './exceptions';
 import { Controller } from './interfaces';
 import errorMiddleware from './middlewares/error.middleware';
 import logger from './utils/logger';
+import redis from './utils/redis';
 
 class App {
   public app: express.Application;
@@ -19,6 +20,7 @@ class App {
     this.app = express();
 
     this.connectToTheDatabase();
+    this.createRedisClient();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
     this.initializeErrorHandling();
@@ -90,6 +92,10 @@ class App {
         )} MongoDB connection error. Please make sure MongoDB is running.`
       );
     });
+  }
+
+  private createRedisClient() {
+    redis.create();
   }
 }
 

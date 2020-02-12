@@ -13,15 +13,13 @@ import {
   LoginActivity,
 } from '@src/interfaces';
 import { userModel } from '@src/models';
+import redisClient from '@src/utils/redis';
 
 import CreateUserDto from '../user/user.dto';
 import LogInDto from './login.dto';
-// import TokenList from '../../interfaces/tokenList.interface';
 
-// TODO: Use redis (in memory storage) which is better for production.
-// Define the type of tokenList correctly!
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tokenList: any = {};
+const AUTH_TOKEN_EXPIRATION = 60 * 60; // 1 hour
+const REFRESH_TOKEN_EXPIRATION = 60 * 60 * 60; // 1 day
 
 class AuthenticationService {
   private user = userModel;
@@ -57,10 +55,10 @@ class AuthenticationService {
         const refreshToken = await this.createRefreshToken(user);
         await this.logUserActivity(user, 'login');
 
-        tokenList[refreshToken] = {
-          authToken,
-          refreshToken,
-        };
+        if (redisClient.getClient && redisClient.getClient.connected) {
+          redisClient.getClient.set(refreshToken, authToken.token);
+          redisClient.getClient.expire(refreshToken, REFRESH_TOKEN_EXPIRATION);
+        }
 
         return {
           authToken,
@@ -74,9 +72,17 @@ class AuthenticationService {
     }
   }
 
-  public logout(refreshToken: string) {
-    if (refreshToken in tokenList) {
-      delete tokenList[refreshToken];
+  public async logout(refreshToken: string) {
+    if (redisClient.getClient && redisClient.getClient.connected) {
+      const authTokenInRedis = await redisClient.getAsync(refreshToken);
+
+      // NOTE: Set the auth token as blacklisted and make it expire after AUTH_TOKEN_EXPIRATION.
+      redisClient.getClient.set(authTokenInRedis, 'blacklisted');
+      redisClient.getClient.expire(authTokenInRedis, AUTH_TOKEN_EXPIRATION);
+
+      if (authTokenInRedis) {
+        redisClient.getClient.del(refreshToken);
+      }
     }
 
     return {
@@ -85,7 +91,16 @@ class AuthenticationService {
   }
 
   public refreshToken = async (refreshToken: string) => {
-    if (refreshToken in tokenList) {
+    let authTokenInRedis;
+    let redisIsDown = false;
+
+    if (redisClient.getClient && redisClient.getClient.connected) {
+      authTokenInRedis = await redisClient.getAsync(refreshToken);
+    } else {
+      redisIsDown = true;
+    }
+
+    if (authTokenInRedis || redisIsDown) {
       const user = await this.validateRefreshToken(refreshToken);
       const authToken = this.createToken(user);
 
@@ -116,8 +131,7 @@ class AuthenticationService {
   };
 
   private createToken(user: User): TokenData {
-    const expiresIn = 60 * 60; // an hour
-    const expiresInMS = expiresIn * 1000;
+    const expiresInMS = AUTH_TOKEN_EXPIRATION * 1000;
     const expiresAt = new Date(Date.now() + expiresInMS).getTime();
     const secret = process.env.JWT_SECRET;
     const dataStoredInToken: DataStoredInToken = {
@@ -126,16 +140,17 @@ class AuthenticationService {
 
     return {
       expiresAt,
-      token: jwt.sign(dataStoredInToken, secret, { expiresIn }),
+      token: jwt.sign(dataStoredInToken, secret, {
+        expiresIn: AUTH_TOKEN_EXPIRATION,
+      }),
     };
   }
 
   private async createRefreshToken(user: User): Promise<string> {
-    const expiresIn = 60 * 60 * 60; // a day
     const secret = process.env.REFRESH_TOKEN_SECRET;
 
     const refreshToken = jwt.sign({ type: 'refresh' }, secret, {
-      expiresIn, // 1 day
+      expiresIn: REFRESH_TOKEN_EXPIRATION,
     });
 
     await this.user.findOneAndUpdate({ email: user.email }, { refreshToken });

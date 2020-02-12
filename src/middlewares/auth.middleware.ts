@@ -7,6 +7,7 @@ import {
 } from '@src/exceptions';
 import { DataStoredInToken, RequestWithUser } from '@src/interfaces';
 import { userModel } from '@src/models';
+import redisClient from '@src/utils/redis';
 
 async function authMiddleware(
   request: RequestWithUser,
@@ -24,6 +25,15 @@ async function authMiddleware(
   if (authToken) {
     const secret = process.env.JWT_SECRET;
     try {
+      if (redisClient.getClient && redisClient.getClient.connected) {
+        // NOTE: Check if user is already logged out and the authToken is blacklisted.
+        const authTokenBlacklisted = await redisClient.getAsync(authToken);
+
+        if (authTokenBlacklisted) {
+          return next(new WrongAuthenticationTokenException());
+        }
+      }
+
       const verificationResponse = jwt.verify(
         authToken,
         secret

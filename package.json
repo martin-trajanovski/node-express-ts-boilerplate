@@ -46,6 +46,7 @@
     "mongoose": "^5.8.9",
     "morgan": "^1.9.1",
     "path": "0.12.7",
+    "redis": "^3.0.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -70,6 +71,7 @@
     "@types/mongoose": "^5.5.18",
     "@types/morgan": "^1.7.37",
     "@types/node": "^12.7.8",
+    "@types/redis": "^2.8.15",
     "@types/shelljs": "^0.8.5",
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
